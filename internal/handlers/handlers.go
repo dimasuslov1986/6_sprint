@@ -23,7 +23,8 @@ func UploadHandle(res http.ResponseWriter, req *http.Request) {
 
 	// Парсить html-форму из файла index.html.
 	// req.ParseMultipartForm(10 << 20)
-	if err := req.ParseMultipartForm(10 << 20); err != nil {
+	err := req.ParseMultipartForm(10 << 20)
+	if err != nil {
 		http.Error(res, "Ошибка при разборе формы", http.StatusInternalServerError)
 		return
 	}
