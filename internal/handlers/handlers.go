@@ -30,6 +30,7 @@ func UploadHandle(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseMultipartForm(10 << 20)
 	if err != nil {
 		http.Error(w, "Ошибка парсинга формы", http.StatusInternalServerError)
+		fmt.Println(err)
 		return
 	}
 
@@ -37,6 +38,7 @@ func UploadHandle(w http.ResponseWriter, r *http.Request) {
 	file, handler, err := r.FormFile("myFile")
 	if err != nil {
 		http.Error(w, "Ошибка при получении файла", http.StatusInternalServerError)
+		fmt.Println(err)
 		return
 	}
 	// закрываем файл
