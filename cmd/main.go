@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -15,6 +16,7 @@ func main() {
 	// создать сервер с помощью вашей функции из пакета server
 	serv := server.New(logger)
 	// запустить его
+	fmt.Println("Сервер запущен на http://localhost:8080/")
 	if err := serv.Serv.ListenAndServe(); err != nil {
 		log.Fatal(err)
 	}

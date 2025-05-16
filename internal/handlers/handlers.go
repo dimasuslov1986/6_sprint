@@ -12,27 +12,31 @@ import (
 	"github.com/Yandex-Practicum/go1fl-sprint6-final/internal/service"
 )
 
-func MainHandle(res http.ResponseWriter, req *http.Request) {
+// Для корневого эндпоинта / нужно реализовать хендлер, который возвращает HTML из файла index.html.
+func MainHandle(w http.ResponseWriter, r *http.Request) {
 
-	res.Header().Set("Content-Type", "text/html; charset=utf-8")
-	res.WriteHeader(http.StatusOK)
-	//res.Write(?)
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	data, err := os.ReadFile("index.html")
+	if err != nil {
+		log.Fatal(http.StatusInternalServerError)
+	}
+	w.Write(data)
 }
 
-func UploadHandle(res http.ResponseWriter, req *http.Request) {
+func UploadHandle(w http.ResponseWriter, r *http.Request) {
 
 	// Парсить html-форму из файла index.html.
-	// req.ParseMultipartForm(10 << 20)
-	err := req.ParseMultipartForm(10 << 20)
+	err := r.ParseMultipartForm(10 << 20)
 	if err != nil {
-		http.Error(res, "Ошибка при разборе формы", http.StatusInternalServerError)
+		http.Error(w, "Ошибка парсинга формы", http.StatusInternalServerError)
 		return
 	}
 
 	// Получить файл из формы (не забудьте его закрыть).
-	file, handler, err := req.FormFile("myFile")
+	file, handler, err := r.FormFile("myFile")
 	if err != nil {
-		http.Error(res, "Ошибка при получении файла", http.StatusInternalServerError)
+		http.Error(w, "Ошибка при получении файла", http.StatusInternalServerError)
 		return
 	}
 	// закрываем файл
@@ -67,5 +71,5 @@ func UploadHandle(res http.ResponseWriter, req *http.Request) {
 		log.Fatal(http.StatusInternalServerError)
 	}
 	// Вернуть результат конвертации строки.
-	res.Write([]byte(req.FormValue(result)))
+	w.Write([]byte(r.FormValue(result)))
 }
