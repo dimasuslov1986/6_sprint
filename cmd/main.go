@@ -11,7 +11,7 @@ func main() {
 
 	// создать логгер
 	// New(out io.Writer, prefix string, flag int) *Logger
-	logger := log.New(os.Stdout, "INFO", log.LstdFlags)
+	logger := log.New(os.Stdout, "http: ", log.LstdFlags)
 	// создать сервер с помощью вашей функции из пакета server
 	serv := server.New(logger)
 	// запустить его
