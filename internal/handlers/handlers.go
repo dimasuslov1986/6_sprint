@@ -35,7 +35,7 @@ func UploadHandle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Получить файл из формы (не забудьте его закрыть).
-	file, handler, err := r.FormFile("myFile")
+	file, _, err := r.FormFile("myFile")
 	if err != nil {
 		http.Error(w, "Ошибка при получении файла", http.StatusInternalServerError)
 		fmt.Println(err)
@@ -50,28 +50,38 @@ func UploadHandle(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Ошибка чтения:", http.StatusInternalServerError)
 		return
 	}
+	fmt.Println(string(body))
 	// Передать эти данные в функцию автоопределения из пакета service, которую вы создали, чтобы получить переконвертируемую строку.
 	result, err := service.Convert(string(body))
 	if err != nil {
 		fmt.Println("Ошибка конвертации:", http.StatusInternalServerError)
 		return
 	}
-
+	fmt.Println(result)
 	// Создать локальный файл. Эта операция обычно небезопасна и так делать не рекомендуется, но в рамках нашего задания хотелось бы более наглядного результата, поэтому мы решились на этот шаг, ради видимого результата. А вообще, обычно используют временные файлы.
-	nameNewFile := time.Now().UTC().Format("2006-01-02 15:04:05")
+	nameNewFile := time.Now().UTC().Format("20060102150405")
 	// получаем текущую директорию
 	curDir, err := os.Getwd()
 	if err != nil {
 		log.Fatal(http.StatusInternalServerError)
+		return
 	}
-	ext := filepath.Ext(handler.Filename)
-	newFile := filepath.Join(curDir, nameNewFile, ext)
+	newFile, err := os.Create(filepath.Join(curDir, nameNewFile))
+	if err != nil {
+		fmt.Println("Ошибка создания файла:", http.StatusInternalServerError)
+		fmt.Println(err)
+		return
+	}
+	defer newFile.Close()
 
 	// Записать в локальный файл результат конвертации строки. Для генерации имени файла вы можете использовать время с помощью time.Now().UTC().String(). Чтобы получить расширения файла, используйте filepath.Ext().
-	err = os.WriteFile(newFile, []byte(result), 0755)
+	_, err = newFile.Write([]byte(result))
 	if err != nil {
 		log.Fatal(http.StatusInternalServerError)
+		return
 	}
+
 	// Вернуть результат конвертации строки.
 	w.Write([]byte(r.FormValue(result)))
+	fmt.Println(result)
 }
