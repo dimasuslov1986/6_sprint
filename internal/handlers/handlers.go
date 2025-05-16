@@ -13,24 +13,20 @@ import (
 )
 
 func MainHandle(res http.ResponseWriter, req *http.Request) {
-	curDir, err := os.Getwd()
-	if err != nil {
-		log.Fatal(err)
-	}
-	data, err := os.ReadFile(filepath.Join(curDir, "index.html"))
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(string(data))
-	// res.Header().Set("Content-Type", "text/html; charset=utf-8")
-	// res.WriteHeader(http.StatusOK)
-	// res.Write(?)
+
+	res.Header().Set("Content-Type", "text/html; charset=utf-8")
+	res.WriteHeader(http.StatusOK)
+	//res.Write(?)
 }
 
 func UploadHandle(res http.ResponseWriter, req *http.Request) {
 
 	// Парсить html-форму из файла index.html.
-	req.ParseMultipartForm(10 << 20)
+	// req.ParseMultipartForm(10 << 20)
+	if err := req.ParseMultipartForm(10 << 20); err != nil {
+		http.Error(res, "Ошибка при разборе формы", http.StatusInternalServerError)
+		return
+	}
 
 	// Получить файл из формы (не забудьте его закрыть).
 	file, handler, err := req.FormFile("myFile")
@@ -55,7 +51,7 @@ func UploadHandle(res http.ResponseWriter, req *http.Request) {
 	}
 
 	// Создать локальный файл. Эта операция обычно небезопасна и так делать не рекомендуется, но в рамках нашего задания хотелось бы более наглядного результата, поэтому мы решились на этот шаг, ради видимого результата. А вообще, обычно используют временные файлы.
-	nameNewFile := time.Now().UTC().String()
+	nameNewFile := time.Now().UTC().Format("2006-01-02 15:04:05")
 	// получаем текущую директорию
 	curDir, err := os.Getwd()
 	if err != nil {
