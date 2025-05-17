@@ -48,13 +48,13 @@ func UploadHandle(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Ошибка чтения:", http.StatusInternalServerError)
 		return
 	}
-	fmt.Println(string(body))
+
 	// Передать эти данные в функцию автоопределения из пакета service, которую вы создали, чтобы получить переконвертируемую строку.
 	result, err := service.Convert(string(body))
 
 	if err != nil {
 		fmt.Println("Ошибка конвертации:", http.StatusInternalServerError)
-		fmt.Println(err)
+
 		return
 	}
 
@@ -81,6 +81,5 @@ func UploadHandle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Вернуть результат конвертации строки.
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	w.Write([]byte(r.FormValue(result)))
+	w.Write([]byte(result))
 }
