@@ -54,6 +54,7 @@ func UploadHandle(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		fmt.Println("Ошибка конвертации:", http.StatusInternalServerError)
+		fmt.Println(err)
 		return
 	}
 
