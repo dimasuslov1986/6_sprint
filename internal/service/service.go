@@ -8,7 +8,7 @@ import (
 )
 
 func mors(str string) bool {
-	b := strings.Contains(".-", str)
+	b := strings.Contains(str, ".")
 	return b
 }
 
