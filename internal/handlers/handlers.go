@@ -48,7 +48,7 @@ func UploadHandle(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Ошибка чтения:", http.StatusInternalServerError)
 		return
 	}
-
+	fmt.Println(string(body))
 	// Передать эти данные в функцию автоопределения из пакета service, которую вы создали, чтобы получить переконвертируемую строку.
 	result, err := service.Convert(string(body))
 
