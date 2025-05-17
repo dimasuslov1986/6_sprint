@@ -34,27 +34,24 @@ func UploadHandle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Получить файл из формы (не забудьте его закрыть).
-	file, fileHeader, err := r.FormFile("myFile")
+	file, _, err := r.FormFile("myFile")
 	if err != nil {
 		http.Error(w, "Ошибка при получении файла", http.StatusInternalServerError)
 		return
 	}
 	// закрываем файл
 	defer file.Close()
-	fmt.Println(fileHeader.Filename)
-	fmt.Println(fileHeader.Header)
-	fmt.Println(fileHeader.Size)
+
 	// Прочитать данные из файла.
 	body, err := io.ReadAll(file)
 	if err != nil {
 		fmt.Println("Ошибка чтения:", http.StatusInternalServerError)
 		return
 	}
-	fmt.Println(body)
-	fmt.Println(string(body))
+
 	// Передать эти данные в функцию автоопределения из пакета service, которую вы создали, чтобы получить переконвертируемую строку.
 	result, err := service.Convert(string(body))
-	fmt.Println(result)
+
 	if err != nil {
 		fmt.Println("Ошибка конвертации:", http.StatusInternalServerError)
 		return
